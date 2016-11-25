@@ -36,9 +36,11 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
+            ['label' => 'Home', 'url' => ['/site/index'], 'visible' => Yii::$app->user->isGuest],
+            ['label' => 'About', 'url' => ['/site/about'], 'visible' => Yii::$app->user->isGuest],
+            ['label' => 'Contact', 'url' => ['/site/contact'], 'visible' => Yii::$app->user->isGuest],
+            ['label' => 'Saloon', 'url' => ['/site/saloon'], 'visible' => Yii::$app->user->can('serving')],
+            ['label' => 'Kitchen', 'url' => ['/site/kitchen'], 'visible' => Yii::$app->user->can('cooking')],
             Yii::$app->user->isGuest ? (
                 ['label' => 'Login', 'url' => ['/site/login']]
             ) : (

@@ -3,13 +3,14 @@
 namespace app\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 
-class SiteController extends Controller
+class SiteController
+    extends Controller
 {
     /**
      * @inheritdoc
@@ -19,10 +20,10 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout'],
+                'only' => ['index', 'logout'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['index', 'logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -121,5 +122,25 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    /**
+     * Displays saloon page.
+     *
+     * @return string
+     */
+    public function actionSaloon()
+    {
+        return $this->render('saloon');
+    }
+
+    /**
+     * Displays kitchen page.
+     *
+     * @return string
+     */
+    public function actionKitchen()
+    {
+        return $this->render('kitchen');
     }
 }
