@@ -13,7 +13,7 @@ use yii\db\ActiveRecord;
  * @property integer $table_number
  * @property string $estimated_time
  * @property string $condition
- * @property integer $owner
+ * @property integer $owner_id
  * @property string $created
  */
 class Order
@@ -38,6 +38,7 @@ class Order
             [['estimated_time'], 'safe'],
             [['condition'], 'string'],
             [['title'], 'string', 'max' => 63],
+            ['estimated_time', 'date', 'format' => 'yyyy-M-d H:m']
         ];
     }
 
@@ -52,8 +53,17 @@ class Order
             'table_number' => 'Table Number',
             'estimated_time' => 'Estimated Time',
             'condition' => 'Condition',
-            'owner' => 'Owner',
+            'owner_id' => 'Owner',
             'created' => 'Created',
         ];
     }
+
+    public function getOwner() {
+        return $this->hasOne(User::className(), ['id' => 'owner_id']);
+    }
+
+    // public function afterFind() {
+    //     parent::afterFind();
+    //     return true;
+    // }
 }

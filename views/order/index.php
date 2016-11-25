@@ -19,15 +19,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             'title',
             'table_number',
-            'cooking_time',
+            'estimated_time',
             'condition',
-            // 'waiter',
-            // 'created',
+            ['label' => 'Waiter', 'value' => function ($model) {return $model->owner->fullName;}],
+            'created',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

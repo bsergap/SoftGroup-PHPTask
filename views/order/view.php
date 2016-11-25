@@ -31,9 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'title',
             'table_number',
-            'cooking_time',
+            'estimated_time',
             'condition',
-            'waiter',
+            ['label' => 'Waiter', 'value' => $model->owner->fullName],
             'created',
         ],
     ]) ?>

@@ -39,8 +39,10 @@ AppAsset::register($this);
             ['label' => 'Home', 'url' => ['/site/index'], 'visible' => Yii::$app->user->isGuest],
             ['label' => 'About', 'url' => ['/site/about'], 'visible' => Yii::$app->user->isGuest],
             ['label' => 'Contact', 'url' => ['/site/contact'], 'visible' => Yii::$app->user->isGuest],
-            ['label' => 'Saloon', 'url' => ['/site/saloon'], 'visible' => Yii::$app->user->can('serving')],
-            ['label' => 'Kitchen', 'url' => ['/site/kitchen'], 'visible' => Yii::$app->user->can('cooking')],
+            ['label' => 'Saloon', 'url' => ['/order/saloon'], 'visible' => Yii::$app->user->can('serving')],
+            ['label' => 'Kitchen', 'url' => ['/order/kitchen'], 'visible' => Yii::$app->user->can('cooking')],
+            ['label' => 'Orders', 'url' => ['/order/index'], 'visible' => !Yii::$app->user->isGuest],
+            ['label' => 'Users', 'url' => ['/user/index'], 'visible' => !Yii::$app->user->isGuest],
             Yii::$app->user->isGuest ? (
                 ['label' => 'Login', 'url' => ['/site/login']]
             ) : (

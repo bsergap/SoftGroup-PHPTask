@@ -15,6 +15,8 @@ use yii\helpers\Security;
  * @property string $password
  * @property string $password_reset_token
  * @property string $auth_key
+ * @property string $first_name
+ * @property string $last_name
  * @property integer $is_admin
  * @property integer $is_waiter
  * @property integer $is_cook
@@ -40,6 +42,7 @@ class User
             [['username', 'password'], 'required'],
             [['is_admin', 'is_waiter', 'is_cook'], 'integer'],
             [['username', 'password'], 'string', 'max' => 63],
+            [['first_name', 'last_name'], 'string', 'max' => 32],
         ];
     }
 
@@ -52,6 +55,9 @@ class User
             'id' => 'User ID',
             'username' => 'Username',
             'password' => 'Password',
+            'first_name' => 'First name',
+            'last_name' => 'Last name',
+            'fullName' => 'Full name',
             'is_admin' => 'Is Admin',
             'is_waiter' => 'Is Waiter',
             'is_cook' => 'Is Cook',
@@ -176,4 +182,9 @@ class User
         $this->password_reset_token = null;
     }
     /** EXTENSION MOVIE **/
+
+    public function getFullName()
+    {
+        return $this->first_name.' '.$this->last_name;
+    }
 }

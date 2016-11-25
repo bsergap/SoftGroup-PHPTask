@@ -22,7 +22,8 @@
         "trntv/yii2-datetime-widget": "^1.0",
         "kartik-v/yii2-widget-timepicker": "*",
         "janisto/yii2-timepicker": "*",
-        "russ666/yii2-countdown": "^0.1.0"
+        "russ666/yii2-countdown": "^0.1.0",
+        "cboden/ratchet": "^0.3.5"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

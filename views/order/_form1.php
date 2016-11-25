@@ -16,19 +16,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'estimated_time')->textInput()->widget(
-        \janisto\timepicker\TimePicker::className(), [
-            'mode' => 'datetime',
-            'clientOptions'=>[
-                'dateFormat' => 'yy-mm-dd',
-                // 'timeFormat' => 'HH:mm:ss',
-                // 'showSecond' => true,
-            ],
-        ]
-    ) ?>
-
-    <?= $form->field($model, 'condition')->dropDownList([ 'new' => 'New', 'pending' => 'Pending', 'ready' => 'Ready', ]) ?>
-
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>

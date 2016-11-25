@@ -123,24 +123,4 @@ class SiteController
     {
         return $this->render('about');
     }
-
-    /**
-     * Displays saloon page.
-     *
-     * @return string
-     */
-    public function actionSaloon()
-    {
-        return $this->render('saloon');
-    }
-
-    /**
-     * Displays kitchen page.
-     *
-     * @return string
-     */
-    public function actionKitchen()
-    {
-        return $this->render('kitchen');
-    }
 }

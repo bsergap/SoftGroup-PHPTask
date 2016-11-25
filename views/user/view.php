@@ -30,10 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'username',
-            // 'password',
-            'is_admin',
-            'is_waiter',
-            'is_cook',
+            'fullName',
+            ['format' => 'raw', 'attribute' => 'is_admin',  'value' => $model->is_admin  ? 'Yes' : 'No'],
+            ['format' => 'raw', 'attribute' => 'is_waiter', 'value' => $model->is_waiter ? 'Yes' : 'No'],
+            ['format' => 'raw', 'attribute' => 'is_cook',   'value' => $model->is_cook   ? 'Yes' : 'No'],
         ],
     ]) ?>
 

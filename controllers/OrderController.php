@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+
 use app\models\Order;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
@@ -24,7 +25,7 @@ class OrderController
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'view', 'create', 'update', 'delete'],
+                'only' => ['index', 'view', 'create', 'update', 'delete', 'saloon', 'kitchen'],
                 'rules' => [
                     [
                         'actions' => ['index', 'view'],
@@ -32,12 +33,12 @@ class OrderController
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['create'],
+                        'actions' => ['create', 'saloon'],
                         'allow' => true,
                         'roles' => ['waiter'],
                     ],
                     [
-                        'actions' => ['update'],
+                        'actions' => ['update', 'kitchen'],
                         'allow' => true,
                         'roles' => ['cook'],
                     ],
@@ -64,7 +65,9 @@ class OrderController
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Order::find(),
+            'query' => Order::find()
+                ->orderBy('id DESC')
+                ->joinWith('owner'),
         ]);
 
         return $this->render('index', [
@@ -92,11 +95,11 @@ class OrderController
     public function actionCreate()
     {
         $model = new Order();
-        $model->owner = Yii::$app->user->id;
+        $model->owner_id = Yii::$app->user->id;
         $model->condition = 'new';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['saloon']);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -113,9 +116,16 @@ class OrderController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->estimated_time = date("Y-m-d H:i", strtotime($model->estimated_time ?: 'now'));
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->estimated_time && $model->condition != 'ready')
+                $model->condition = 'pending';
+            $model->save();
+
+            return \Yii::$app->user->can('admin') ?
+                $this->redirect(['index']) :
+                $this->redirect(['kitchen']);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -150,5 +160,44 @@ class OrderController
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+
+
+    /**
+     * Displays saloon page.
+     *
+     * @return string
+     */
+    public function actionSaloon()
+    {
+        $dataProvider = new ActiveDataProvider([
+            'query' => Order::find()
+                ->orderBy('id DESC')
+                ->joinWith('owner'),
+        ]);
+
+        return $this->render('saloon', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Displays kitchen page.
+     *
+     * @return string
+     */
+    public function actionKitchen()
+    {
+        $dataProvider = new ActiveDataProvider([
+            'query' => Order::find()
+                ->where('`condition` != \'ready\'')
+                ->orderBy('id DESC')
+                ->joinWith('owner'),
+        ]);
+
+        return $this->render('kitchen', [
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }

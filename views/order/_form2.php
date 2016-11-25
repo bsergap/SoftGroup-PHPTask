@@ -12,9 +12,9 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'table_number')->textInput() ?>
+    <?= $form->field($model, 'table_number')->textInput(['readonly' => true]) ?>
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'title')->textInput(['readonly' => true]) ?>
 
     <?= $form->field($model, 'estimated_time')->textInput()->widget(
         \janisto\timepicker\TimePicker::className(), [

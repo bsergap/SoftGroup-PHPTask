@@ -26,6 +26,7 @@ $config = [
         'db' => $db,
     ],
     'params' => $params,
+    'timeZone' => 'Europe/Kiev',
     /*
     'controllerMap' => [
         'fixture' => [ // Fixture generation command line.
