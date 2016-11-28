@@ -34,7 +34,7 @@ class SocketServer
             echo "invalid data\n";
             return $from->close();
         }
-        // var_dump($data);
+
         switch ($data['action']) {
             case 'kitchen':
                 $dataProvider = new ActiveDataProvider([
@@ -75,6 +75,20 @@ class SocketServer
                 }
                 break;
 
+            case 'edit-order':
+                $model = Order::findOne($data['data']['order_id']);
+                $model->estimated_time = date("Y-m-d H:i", strtotime($data['data']['estimated_time'] ?: 'now'));
+                $model->condition = $data['data']['condition'] ?: 'new';
+
+                if ($model->estimated_time && $model->condition != 'ready')
+                    $model->condition = 'pending';
+                $model->save();
+
+                $json['task'] = 'reload';
+                foreach ($this->clients as $conn)
+                    $conn->send(json_encode($json));
+                return;
+
             case 'make-order':
                 $model = new Order();
                 $model->owner_id = $data['user_id'];
@@ -82,14 +96,16 @@ class SocketServer
                 $model->title = $data['data']['title'];
                 $model->table_number = $data['data']['table_number'];
                 $model->save();
-                // $json['task'] = 'reload';
-                // break;
+
+                $json['task'] = 'reload';
+                foreach ($this->clients as $conn)
+                    $conn->send(json_encode($json));
+                return;
 
             default:
                 $json['task'] = 'reload';
-                foreach ($this->clients as $conn) {
+                foreach ($this->clients as $conn)
                     $conn->send(json_encode($json));
-                }
                 return;
         }
 

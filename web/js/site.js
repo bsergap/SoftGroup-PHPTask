@@ -11,9 +11,55 @@ var ws;
         ws.onopen = function () {
             console.log("Opening a connection...");
 
-            var $dt;
-            if($('#saloon').length) $dt = $('#saloon');
-            if($('#kitchen').length) $dt = $('#kitchen');
+            var $dt, colDefs;
+            if($('#saloon').length) {
+                $dt = $('#saloon');
+                colDefs = [
+                    {
+                        "targets": 0,
+                        "visible": false
+                    },
+                    {
+                        "targets": 3,
+                        "render": renderCountdown
+                    }
+                ];
+            }
+            if($('#kitchen').length) {
+                $dt = $('#kitchen');
+                colDefs = [
+                    {
+                        "targets": 0,
+                        "visible": false
+                    },
+                    {
+                        "targets": 3,
+                        "render": renderCountdown
+                    },
+                    {
+                        "targets": 5,
+                        "render": function (data, type, full, meta) {
+                            return '<a href="#" data-toggle="modal" data-target="#w0" onclick="$(\'#modal-kitchen input[name=order_id]\').val(\''+full[0]+'\')">Edit</a>';
+                        }
+                    }
+                ];
+                $('#modal-kitchen').submit(function (e) {
+                    var $this = $(this);
+                    setTimeout(function (e) {
+                        // ws.send(JSON.stringify({'action': 'reload', 'user_id': user_id}));
+                        $this.find('button[type="submit"]').prop('disabled', false);
+                        console.log('Submit2 Ok!');
+                    }, 1000);
+                    $this.find('button[type="submit"]').prop('disabled', true);
+                    ws.send(JSON.stringify({'action': 'edit-order', 'user_id': user_id, 'data': {
+                        'order_id': $('#modal-kitchen input[name=order_id]').val(),
+                        'estimated_time': $('#modal-kitchen input.hasDatepicker').val(),
+                        'condition': $('#modal-kitchen select[name=condition]').val()
+                    }}));
+                    console.log('Submit Ok!');
+                    return false;
+                });
+            }
 
             if($dt) $dt.DataTable({
                 "bProcessing": true,
@@ -37,20 +83,7 @@ var ws;
                     ws.send(JSON.stringify({'action': oSettings.sInstance, 'user_id': user_id, 'data': aoData}));
                     console.log('Send Ok!', {'action': oSettings.sInstance, 'user_id': user_id, 'data': aoData});
                 },
-                "columnDefs": [
-                    {
-                        "targets": 0,
-                        "visible": false
-                    },
-                    {
-                        "targets": 3,
-                        "render": renderCountdown
-                    },
-                    {
-                        "targets": 5,
-                        "render": function (data, type, full, meta) {return '<a href="'+data+'">Edit</a>';}
-                    }
-                ]
+                "columnDefs": colDefs
             });
 
             if($('.make-order-form form').length) {

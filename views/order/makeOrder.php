@@ -1,5 +1,6 @@
 <?php
 
+use yii\web\View;
 use yii\helpers\Html;
 
 
@@ -9,6 +10,7 @@ use yii\helpers\Html;
 $this->title = 'Create Order';
 $this->params['breadcrumbs'][] = ['label' => 'Saloon', 'url' => ['saloon']];
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerJs("var user_id = '".$user_id."';", View::POS_END, 'my-options');
 ?>
 <div class="order-create">
 
@@ -17,8 +19,4 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $this->render('_form1', [
         'model' => $model,
     ]) ?>
-
-    <script type="text/javascript">
-    var user_id = '<?= $user_id ?>';
-    </script>
 </div>

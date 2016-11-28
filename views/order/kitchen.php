@@ -1,10 +1,9 @@
 <?php
 
+use yii\web\View;
 use yii\helpers\Html;
-// use yii\grid\GridView;
-use kartik\grid\GridView;
-use kartik\editable\Editable;
-use app\assets\AppAsset;
+use yii\grid\GridView;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -12,6 +11,7 @@ use app\assets\AppAsset;
 $this->title = 'Orders';
 $this->params['breadcrumbs'][] = ['label' => 'Kitchen', 'url' => ['kitchen']];
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerJs("var user_id = '".$user_id."';", View::POS_END, 'my-options');
 ?>
 <div class="site-kitchen">
 
@@ -29,33 +29,25 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
         </thead>
     </table>
-    <script type="text/javascript">
-    var user_id = '<?= $user_id ?>';
-    // (function($) {
-    //     $(document).ready(function() {
-    //         ws = new WebSocket("ws://localhost:8888");
-    //         ws.onopen = function () {
-    //             console.log("Opening a connection...");
-    //             $('#kitchen').DataTable({
-    //                 "bProcessing": true,
-    //                 "bServerSide": true,
+    <?php Modal::begin(['header' => '<h2>Edit Order</h2>',]); ?>
+        <?= Html::beginForm(['order/update'], 'post', ['id' => 'modal-kitchen', 'enctype' => 'multipart/form-data']) ?>
 
-    //                 "info": false,
-    //                 "ordering": false,
-    //                 "paging": false,
-    //                 "searching": false,
+        <?= \janisto\timepicker\TimePicker::widget([
+                'mode' => 'datetime',
+                'clientOptions'=>[
+                    'dateFormat' => 'yy-mm-dd',
+                    // 'timeFormat' => 'HH:mm',
+                    // 'showSecond' => true,
+                ],
+            ]
+        ) ?>
 
-    //                 "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
-    //                   ws.onmessage = function (e) {fnCallback(JSON.parse(e.data));};
-    //                   ws.send(JSON.stringify(aoData));
-    //                   console.log('Send Ok!');
-    //                 }
-    //               });
-    //         };
-    //         ws.onclose = function (e) {console.log(e, "I'm sorry. Bye!");};
-    //         ws.onerror = function (e) {console.log("ERR: " + e.data);};
-    //         // ws.onmessage = function (e) {console.log(evt.data);};
-    //     });
-    // })(jQuery);
-    </script>
+        <?= Html::dropDownList('condition', null, [ 'new' => 'New', 'pending' => 'Pending', 'ready' => 'Ready'], ['class' => 'form-control']) ?>
+        <?= Html::input('hidden', 'order_id') ?>
+
+        <div class="form-group">
+            <?= Html::submitButton('Update', ['class' => 'btn btn-primary', 'data-target' => "#w0", 'data-toggle' => "modal"]) ?>
+        </div>
+        <?= Html::endForm() ?>
+    <?php Modal::end(); ?>
 </div>

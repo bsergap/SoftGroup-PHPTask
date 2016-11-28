@@ -113,3 +113,6 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+#ui-datepicker-div {
+    z-index: 1500!important;
+}
