@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+
 use app\models\User;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
@@ -32,12 +33,12 @@ class UserController
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['create'],
+                        'actions' => ['view', 'create'],
                         'allow' => true,
                         'roles' => ['cook'],
                     ],
                     [
-                        'actions' => ['view', 'update', 'delete'],
+                        'actions' => ['update', 'delete'],
                         'allow' => true,
                         'roles' => ['admin'],
                     ],

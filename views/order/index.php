@@ -24,7 +24,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'table_number',
             'estimated_time',
             'condition',
-            ['label' => 'Waiter', 'value' => function ($model) {return $model->owner->fullName;}],
+            [
+                'label' => 'Waiter',
+                'value' => function ($model) {return $model->owner->fullName;},
+            ],
             'created',
 
             ['class' => 'yii\grid\ActionColumn'],

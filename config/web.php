@@ -51,6 +51,11 @@ $config = [
         ],
         */
     ],
+    'modules' => [
+       'gridview' =>  [
+            'class' => '\kartik\grid\Module'
+        ]
+    ],
     'params' => $params,
     'timeZone' => 'Europe/Kiev',
 ];

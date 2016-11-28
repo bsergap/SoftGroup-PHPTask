@@ -33,7 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'table_number',
             'estimated_time',
             'condition',
-            ['label' => 'Waiter', 'value' => $model->owner->fullName],
+            [
+                'label' => 'Waiter',
+                'value' => $model->owner->fullName,
+            ],
             'created',
         ],
     ]) ?>

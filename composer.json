@@ -23,7 +23,11 @@
         "kartik-v/yii2-widget-timepicker": "*",
         "janisto/yii2-timepicker": "*",
         "russ666/yii2-countdown": "^0.1.0",
-        "cboden/ratchet": "^0.3.5"
+        "cboden/ratchet": "^0.3.5",
+        "kartik-v/yii2-grid": "@dev",
+        "kartik-v/yii2-mpdf": "*",
+        "kartik-v/yii2-editable": "@dev",
+        "kartik-v/yii2-widgets": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

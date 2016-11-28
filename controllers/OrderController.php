@@ -33,17 +33,17 @@ class OrderController
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['create', 'saloon'],
+                        'actions' => ['saloon', 'makeOrder'],
                         'allow' => true,
                         'roles' => ['waiter'],
                     ],
                     [
-                        'actions' => ['update', 'kitchen'],
+                        'actions' => ['kitchen', 'editOrder'],
                         'allow' => true,
                         'roles' => ['cook'],
                     ],
                     [
-                        'actions' => ['delete'],
+                        'actions' => ['create', 'update', 'delete'],
                         'allow' => true,
                         'roles' => ['admin'],
                     ],
@@ -65,9 +65,8 @@ class OrderController
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Order::find()
-                ->orderBy('id DESC')
-                ->joinWith('owner'),
+            'query' => Order::find()->joinWith('owner')
+                // ->orderBy('id DESC'),
         ]);
 
         return $this->render('index', [
@@ -99,7 +98,7 @@ class OrderController
         $model->condition = 'new';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['saloon']);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -121,16 +120,13 @@ class OrderController
         if ($model->load(Yii::$app->request->post())) {
             if ($model->estimated_time && $model->condition != 'ready')
                 $model->condition = 'pending';
-            $model->save();
 
-            return \Yii::$app->user->can('admin') ?
-                $this->redirect(['index']) :
-                $this->redirect(['kitchen']);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+            if ($model->save())
+                return $this->redirect(['view', 'id' => $model->id]);
         }
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -171,15 +167,30 @@ class OrderController
      */
     public function actionSaloon()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Order::find()
-                ->orderBy('id DESC')
-                ->joinWith('owner'),
-        ]);
-
         return $this->render('saloon', [
-            'dataProvider' => $dataProvider,
+            'user_id' => Yii::$app->user->id,
         ]);
+    }
+
+    /**
+     * Displays make Order page.
+     *
+     * @return string
+     */
+    public function actionMakeOrder()
+    {
+        $model = new Order();
+        $model->owner_id = Yii::$app->user->id;
+        $model->condition = 'new';
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['make-order']);
+        } else {
+            return $this->render('makeOrder', [
+                'user_id' => Yii::$app->user->id,
+                'model' => $model,
+            ]);
+        }
     }
 
     /**
@@ -189,15 +200,8 @@ class OrderController
      */
     public function actionKitchen()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Order::find()
-                ->where('`condition` != \'ready\'')
-                ->orderBy('id DESC')
-                ->joinWith('owner'),
-        ]);
-
         return $this->render('kitchen', [
-            'dataProvider' => $dataProvider,
+            'user_id' => Yii::$app->user->id,
         ]);
     }
 }

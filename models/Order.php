@@ -38,7 +38,7 @@ class Order
             [['estimated_time'], 'safe'],
             [['condition'], 'string'],
             [['title'], 'string', 'max' => 63],
-            ['estimated_time', 'date', 'format' => 'yyyy-M-d H:m']
+            ['estimated_time', 'date', 'format' => 'yyyy-MM-dd H:m']
         ];
     }
 
@@ -50,8 +50,8 @@ class Order
         return [
             'id' => 'ID',
             'title' => 'Title',
-            'table_number' => 'Table Number',
-            'estimated_time' => 'Estimated Time',
+            'table_number' => 'Table number',
+            'estimated_time' => 'Estimated time',
             'condition' => 'Condition',
             'owner_id' => 'Owner',
             'created' => 'Created',
@@ -61,9 +61,4 @@ class Order
     public function getOwner() {
         return $this->hasOne(User::className(), ['id' => 'owner_id']);
     }
-
-    // public function afterFind() {
-    //     parent::afterFind();
-    //     return true;
-    // }
 }
