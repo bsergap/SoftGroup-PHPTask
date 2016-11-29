@@ -1,14 +1,19 @@
-var ws;
+var WSocket;
 (function($) {
     function renderCountdown(data, type, full, meta) {
-        if(data) return '<span id="id-'+full[0]+'"></span><script>$("#id-'+full[0]+'").countdown("'+
-            data+'", function(event) {$(this).text(event.strftime("%H:%M:%S"));});</script>';
+        if(data) return '<span id="id-'+full[0]+'"></span><script>$("#id-'+full[0]+
+            '").countdown("'+data+'", function(event) {'+
+                'if(event.type == "stoped" && $(this).text() == "00:00:01")'+
+                    'WSocket.send(JSON.stringify({"action":"reload"}));'+
+                '$(this).text(event.strftime("%H:%M:%S"));'+
+            '});</script>';
         else return '';
 
     }
     $(document).ready(function() {
-        ws = new WebSocket("ws://localhost:8888");
-        ws.onopen = function () {
+        var wsurl = "ws://locahost:8080";
+        WSocket = new WebSocket(wsurl);
+        WSocket.onopen = function () {
             console.log("Opening a connection...");
 
             var $dt, colDefs;
@@ -46,12 +51,12 @@ var ws;
                 $('#modal-kitchen').submit(function (e) {
                     var $this = $(this);
                     setTimeout(function (e) {
-                        // ws.send(JSON.stringify({'action': 'reload', 'user_id': user_id}));
+                        // WSocket.send(JSON.stringify({'action': 'reload', 'user_id': user_id}));
                         $this.find('button[type="submit"]').prop('disabled', false);
                         console.log('Submit2 Ok!');
                     }, 1000);
                     $this.find('button[type="submit"]').prop('disabled', true);
-                    ws.send(JSON.stringify({'action': 'edit-order', 'user_id': user_id, 'data': {
+                    WSocket.send(JSON.stringify({'action': 'edit-order', 'user_id': user_id, 'data': {
                         'order_id': $('#modal-kitchen input[name=order_id]').val(),
                         'estimated_time': $('#modal-kitchen input.hasDatepicker').val(),
                         'condition': $('#modal-kitchen select[name=condition]').val()
@@ -71,16 +76,16 @@ var ws;
                 "searching": false,
 
                 "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
-                    ws.onmessage = function (e) {
+                    WSocket.onmessage = function (e) {
                         var data = JSON.parse(e.data);
                         if(!data['task'] || data['task'] !== 'reload')
                             fnCallback(data);
                         else {
-                            ws.send(JSON.stringify({'action': oSettings.sInstance, 'user_id': user_id, 'data': aoData}));
+                            WSocket.send(JSON.stringify({'action': oSettings.sInstance, 'user_id': user_id, 'data': aoData}));
                             console.log('Reload Ok!', {'action': oSettings.sInstance, 'user_id': user_id, 'data': aoData});
                         }
                     };
-                    ws.send(JSON.stringify({'action': oSettings.sInstance, 'user_id': user_id, 'data': aoData}));
+                    WSocket.send(JSON.stringify({'action': oSettings.sInstance, 'user_id': user_id, 'data': aoData}));
                     console.log('Send Ok!', {'action': oSettings.sInstance, 'user_id': user_id, 'data': aoData});
                 },
                 "columnDefs": colDefs
@@ -90,12 +95,12 @@ var ws;
                 $('.make-order-form form').submit(function (e) {
                     var $this = $(this);
                     setTimeout(function (e) {
-                        // ws.send(JSON.stringify({'action': 'reload', 'user_id': user_id}));
+                        // WSocket.send(JSON.stringify({'action': 'reload', 'user_id': user_id}));
                         $this.find('button[type="submit"]').prop('disabled', false);
                         console.log('Submit2 Ok!');
                     }, 1000);
                     $this.find('button[type="submit"]').prop('disabled', true);
-                    ws.send(JSON.stringify({'action': 'make-order', 'user_id': user_id, 'data': {
+                    WSocket.send(JSON.stringify({'action': 'make-order', 'user_id': user_id, 'data': {
                         'title': $('#order-title').val(),
                         'table_number': $('#order-table_number').val()
                     }}));
@@ -104,9 +109,20 @@ var ws;
                 });
             }
         };
-        ws.onclose = function (e) {console.log(e, "I'm sorry. Bye!");};
-        ws.onerror = function (e) {console.log("ERR: " + e.data);};
-        ws.onmessage = function (e) {console.log(e.data);};
+        WSocket.onclose = function (e) {
+            console.log(e, "I'm sorry. Bye!");
+            setTimeout(function(){
+                var ws = new WebSocket(wsurl);
+                ws.onopen = function () {
+                    console.log("Reopening a connection...");};
+                ws.onclose = WSocket.onclose;
+                ws.onerror = WSocket.onerror;
+                ws.onmessage = WSocket.onmessage;
+                WSocket = ws;
+            }, 5000);
+        };
+        WSocket.onerror = function (e) {console.log("ERR: " + e.data);};
+        WSocket.onmessage = function (e) {console.log(e.data);};
     });
 })(jQuery);
 

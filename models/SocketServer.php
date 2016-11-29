@@ -103,6 +103,9 @@ class SocketServer
                 return;
 
             default:
+                Order::updateAll(['condition' => 'ready'],
+                    ['between', 'estimated_time', '2000-01-01', date('Y-m-d H:i:s')]);
+
                 $json['task'] = 'reload';
                 foreach ($this->clients as $conn)
                     $conn->send(json_encode($json));
