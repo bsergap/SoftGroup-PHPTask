@@ -29,6 +29,12 @@ var WSocket;
                         "render": renderCountdown
                     }
                 ];
+                crtRow = function( row, data, dataIndex ) {
+                    if (data[2] == "new")
+                        $(row).addClass('danger');
+                    if (data[2] == "ready")
+                        $(row).addClass('success');
+                };
             }
             if($('#kitchen').length) {
                 $dt = $('#kitchen');
@@ -39,15 +45,23 @@ var WSocket;
                     },
                     {
                         "targets": 3,
+                        "visible": false
+                    },
+                    {
+                        "targets": 4,
                         "render": renderCountdown
                     },
                     {
-                        "targets": 5,
+                        "targets": 6,
                         "render": function (data, type, full, meta) {
                             return '<a href="#" data-toggle="modal" data-target="#w0" onclick="$(\'#modal-kitchen input[name=order_id]\').val(\''+full[0]+'\')">Edit</a>';
                         }
                     }
                 ];
+                crtRow = function( row, data, dataIndex ) {
+                    if (data[3] == "new")
+                        $(row).addClass('danger');
+                };
                 $('#modal-kitchen').submit(function (e) {
                     var $this = $(this);
                     setTimeout(function (e) {
@@ -88,7 +102,8 @@ var WSocket;
                     WSocket.send(JSON.stringify({'action': oSettings.sInstance, 'user_id': user_id, 'data': aoData}));
                     console.log('Send Ok!', {'action': oSettings.sInstance, 'user_id': user_id, 'data': aoData});
                 },
-                "columnDefs": colDefs
+                "columnDefs": colDefs,
+                "createdRow": crtRow
             });
 
             if($('.make-order-form form').length) {

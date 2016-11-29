@@ -49,6 +49,7 @@ class SocketServer
                         $record->id,
                         $record->table_number,
                         $record->title,
+                        $record->condition,
                         $record->estimated_time,
                         $record->owner->fullName,
                         // Url::to(['order/update']),

@@ -23,6 +23,7 @@ $this->registerJs("var user_id = '".$user_id."';", View::POS_END, 'my-options');
                 <th></th>
                 <th>Table number</th>
                 <th>Title</th>
+                <th>Condition</th>
                 <th>Estimated time</th>
                 <th>Waiter</th>
                 <th>Actions</th>

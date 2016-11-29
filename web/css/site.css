@@ -116,3 +116,20 @@ a.desc:after {
 #ui-datepicker-div {
     z-index: 1500!important;
 }
+
+table tr.success > th,
+table tr.success > td,
+table tr.success
+    {background-color: #dff0d8;}
+table tr.success:hover > th,
+table tr.success:hover > td,
+table tr.success:hover
+    {background-color: #d0e9c6;}
+table tr.danger > th,
+table tr.danger > td,
+table tr.danger
+    {background-color: #f2dede;}
+table tr.danger:hover > th,
+table tr.danger:hover > td,
+table tr.danger:hover
+    {background-color: #ebcccc;}
